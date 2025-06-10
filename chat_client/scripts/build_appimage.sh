@@ -78,7 +78,7 @@ Comment=Cross-platform audio-visual chat client with FLTK
 Exec=chat_client
 Icon=chat_client
 Type=Application
-Categories=Network;Chat;AudioVideo;
+Categories=Network;AudioVideo;Chat;
 Terminal=false
 StartupNotify=true
 X-AppImage-Name=${APP_NAME}
@@ -121,7 +121,7 @@ cat > ${APP_DIR}/usr/share/metainfo/chat_client.appdata.xml << EOF
   <id>com.movatalk.chat_client</id>
   <name>Audio-Visual Chat Client</name>
   <summary>Cross-platform audio-visual chat client</summary>
-  <metadata_license>Apache-2.0</metadata_license>
+  <metadata_license>FSFAP</metadata_license>
   <project_license>Apache-2.0</project_license>
   <description>
     <p>
@@ -139,6 +139,7 @@ cat > ${APP_DIR}/usr/share/metainfo/chat_client.appdata.xml << EOF
   <releases>
     <release version="${PKG_VERSION}" date="$(date +%Y-%m-%d)" />
   </releases>
+  <developer_name>Tom Sapletta</developer_name>
 </component>
 EOF
 

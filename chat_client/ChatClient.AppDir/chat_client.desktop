@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Audio-Visual Chat Client
+Comment=Cross-platform audio-visual chat client with FLTK
+Exec=chat_client
+Icon=chat_client
+Type=Application
+Categories=Network;Chat;AudioVideo;
+Terminal=false
+StartupNotify=true
+X-AppImage-Name=ChatClient
+X-AppImage-Version=1.0.0
+X-AppImage-Arch=x86_64

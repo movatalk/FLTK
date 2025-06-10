@@ -158,6 +158,28 @@ The AppImage is a self-contained portable application that can run on any Linux 
    
    If you encounter audio issues in your environment, this test can help diagnose if the problem is with the AppImage packaging or your system configuration.
 
+8. **Automated AppImage Building with CI/CD**
+   We've implemented a GitHub Actions workflow that automatically builds and releases AppImages:
+   
+   - **Continuous Integration**: Every push to the main branch triggers an automated build
+   - **Release Automation**: Tagged versions (e.g., `v1.0.0`) automatically publish AppImages as GitHub releases
+   - **Artifact Production**: Each successful build saves the AppImage as a downloadable artifact
+   
+   To create a new release:
+   
+   ```bash
+   # Tag a new version
+   git tag v1.0.0
+   git push --tags
+   ```
+   
+   The workflow file is located at `.github/workflows/build-appimage.yml` and performs these steps:
+   - Installs all dependencies
+   - Builds the application
+   - Creates the AppImage using our build script
+   - Tests the AppImage's basic functionality
+   - Publishes the AppImage as a release asset (for tagged versions)
+
 ## Docker Support
 
 ### Building Docker Image
