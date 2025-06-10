@@ -1,0 +1,155 @@
+# Audio-Visual Chat Client - Device Streaming Configuration
+# Author: Tom Sapletta
+# License: Apache-2.0
+# Version: 1.0.0
+
+# Global settings
+server:
+  host: 0.0.0.0  # Listen on all interfaces
+  web_admin_port: 8080  # Web admin interface port
+  discovery_enabled: true  # Enable device auto-discovery
+
+# Protocol settings with default ports
+protocols:
+  rtsp:
+    enabled: true
+    default_port_range: [8554, 8654]
+    transport: ["tcp", "udp"]
+    latency: low
+    path_format: "/stream/{device_id}"
+    server_binary: "/usr/bin/rtsp-simple-server"
+    config_file: "/etc/chat_client/rtsp-server.conf"
+  
+  webrtc:
+    enabled: true
+    default_port_range: [8700, 8800]
+    ice_servers:
+      - urls: ["stun:stun.l.google.com:19302"]
+    latency: very_low
+    path_format: "/webrtc/{device_id}"
+    signaling_port: 8833
+  
+  hls:
+    enabled: true
+    default_port_range: [8900, 9000]
+    segment_duration: 4
+    playlist_size: 5
+    latency: high
+    path_format: "/hls/{device_id}/index.m3u8"
+    http_port: 8080
+  
+  podcast:
+    enabled: false
+    default_port: 9080
+    format: "mp3"
+    bitrate: 128
+    path_format: "/podcast/{device_id}.xml"
+    http_port: 8080
+
+# Audio device configurations
+audio_devices:
+  - id: "default_mic"
+    name: "Default Microphone"
+    type: "input"
+    system_id: "default"
+    protocols:
+      - type: "rtsp"
+        port: 8554
+        path: "/mic/default"
+        enabled: true
+        codec: "opus"
+        bitrate: 128000
+      - type: "webrtc"
+        port: 8700
+        enabled: true
+      - type: "hls"
+        port: 8900
+        enabled: false
+  
+  - id: "default_speaker"
+    name: "Default Speaker"
+    type: "output"
+    system_id: "default"
+    protocols:
+      - type: "rtsp"
+        port: 8555
+        path: "/speaker/default"
+        enabled: true
+        codec: "opus"
+        bitrate: 128000
+      - type: "webrtc"
+        port: 8701
+        enabled: true
+
+# Video device configurations
+video_devices:
+  - id: "default_camera"
+    name: "Default Camera"
+    type: "input"
+    system_id: "default"
+    protocols:
+      - type: "rtsp"
+        port: 8556
+        path: "/camera/default"
+        enabled: true
+        codec: "h264"
+        resolution: "720p"
+        framerate: 30
+      - type: "webrtc"
+        port: 8702
+        enabled: true
+      - type: "hls"
+        port: 8901
+        enabled: true
+        path: "/hls/camera/index.m3u8"
+
+# Quality presets
+quality_presets:
+  audio:
+    low:
+      codec: "opus"
+      bitrate: 64000
+      sample_rate: 16000
+    medium:
+      codec: "opus"
+      bitrate: 96000
+      sample_rate: 44100
+    high:
+      codec: "opus"
+      bitrate: 128000
+      sample_rate: 48000
+  
+  video:
+    low:
+      codec: "h264"
+      resolution: "480p"
+      framerate: 15
+      bitrate: 500000
+    medium:
+      codec: "h264"
+      resolution: "720p"
+      framerate: 30
+      bitrate: 1500000
+    high:
+      codec: "h264"
+      resolution: "1080p"
+      framerate: 30
+      bitrate: 3000000
+
+# External services integrations
+integrations:
+  recording:
+    enabled: true
+    storage_path: "/var/lib/chat_client/recordings"
+    formats: ["mp4", "mp3", "ogg"]
+  
+  streaming_platforms:
+    - name: "YouTube Live"
+      enabled: false
+      rtmp_url: "rtmp://a.rtmp.youtube.com/live2"
+      stream_key: "${YOUTUBE_STREAM_KEY}"
+    
+    - name: "Twitch"
+      enabled: false
+      rtmp_url: "rtmp://live.twitch.tv/app"
+      stream_key: "${TWITCH_STREAM_KEY}"
