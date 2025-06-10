@@ -21,7 +21,7 @@ OBJS = $(SRCS:src/%.cpp=$(OBJDIR)/%.o)
 TARGET = $(BINDIR)/chat_client
 
 # Main targets
-.PHONY: all clean install test
+.PHONY: all clean install test appimage
 
 all: $(TARGET)
 
@@ -72,3 +72,9 @@ x86_64:
 arm64:
 	@echo "Building for ARM64 architecture..."
 	@$(MAKE) CXXFLAGS="$(CXXFLAGS) -march=armv8-a -mtune=cortex-a72 -DARM64_NEON_OPTIMIZED"
+
+# AppImage packaging target
+appimage:
+	@echo "Building AppImage package..."
+	@scripts/build_appimage.sh
+	@echo "AppImage creation completed."
