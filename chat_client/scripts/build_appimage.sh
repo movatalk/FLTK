@@ -29,12 +29,44 @@ mkdir -p ${APP_DIR}/usr/share/icons/hicolor/scalable/apps
 mkdir -p ${APP_DIR}/usr/share/metainfo
 mkdir -p ${APP_DIR}/data/config
 
-echo "Using existing binary for AppImage packaging..."
-# Copy the binary
-cp ${WORKSPACE}/bin/chat_client ${APP_DIR}/usr/bin/
+# Check if we have a real binary or need to build it
+if [ -f "${WORKSPACE}/build/chat_client" ]; then
+    echo "Found binary in build directory, using it for AppImage packaging..."
+    cp ${WORKSPACE}/build/chat_client ${APP_DIR}/usr/bin/
+elif [ -f "${WORKSPACE}/bin/chat_client" ]; then
+    echo "Found binary in bin directory, using it for AppImage packaging..."
+    cp ${WORKSPACE}/bin/chat_client ${APP_DIR}/usr/bin/
+else
+    echo "No pre-built binary found. Attempting to build from source..."
+    if [ ! -d "${WORKSPACE}/build" ]; then
+        mkdir -p ${WORKSPACE}/build
+    fi
+    
+    cd ${WORKSPACE}/build
+    cmake ..
+    make -j$(nproc)
+    cd ${WORKSPACE}
+    
+    if [ -f "${WORKSPACE}/build/chat_client" ]; then
+        cp ${WORKSPACE}/build/chat_client ${APP_DIR}/usr/bin/
+    else
+        echo "Error: Failed to build chat_client binary"
+        exit 1
+    fi
+fi
+
+# Copy required shared libraries
+echo "Copying required shared libraries..."
+ldd ${APP_DIR}/usr/bin/chat_client | grep "=>" | grep -v "ld-linux" | awk '{print $3}' | while read -r lib; do
+    if [ -n "$lib" ] && [ -f "$lib" ]; then
+        mkdir -p ${APP_DIR}/$(dirname ${lib#/})
+        cp -L "$lib" ${APP_DIR}/${lib#/}
+    fi
+done
 
 # Copy data files (if any)
 if [ -d "${WORKSPACE}/data" ]; then
+    echo "Copying data files..."
     cp -r ${WORKSPACE}/data/* ${APP_DIR}/data/
 fi
 
@@ -104,6 +136,9 @@ cat > ${APP_DIR}/usr/share/metainfo/chat_client.appdata.xml << EOF
     <binary>chat_client</binary>
   </provides>
   <content_rating type="oars-1.1" />
+  <releases>
+    <release version="${PKG_VERSION}" date="$(date +%Y-%m-%d)" />
+  </releases>
 </component>
 EOF
 
@@ -126,7 +161,7 @@ exec "${HERE}/usr/bin/chat_client" "$@"
 EOF
 chmod +x ${APP_DIR}/AppRun
 
-echo "AppDir prepared. Fetching linuxdeploy..."
+echo "AppDir prepared. Setting up linuxdeploy..."
 
 # Download linuxdeploy if it doesn't exist
 if [ ! -f "$LINUXDEPLOY" ]; then
@@ -135,26 +170,39 @@ if [ ! -f "$LINUXDEPLOY" ]; then
     chmod +x "$LINUXDEPLOY"
 fi
 
-# Create AppImage (mocking it for now since we don't have the actual linuxdeploy tool)
+# Ensure linuxdeploy is executable
+chmod +x "$LINUXDEPLOY"
+
+# Create AppImage
 echo "Creating AppImage..."
-echo "Mock AppImage creation (in a real environment with linuxdeploy installed, this would create: ${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage)"
-# In a real environment, we would run the following:
-# ./$LINUXDEPLOY --appdir=${APP_DIR} --output=appimage
+ARCH=${ARCH} VERSION=${PKG_VERSION} ./${LINUXDEPLOY} --appdir=${APP_DIR} --output=appimage
 
-# For testing purposes, we'll create a wrapper script as our "AppImage"
-cat > ${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage << 'EOF'
-#!/bin/bash
-echo "Chat Client AppImage (Mock Version)"
-echo "Author: Tom Sapletta"
-echo "License: Apache 2.0"
-echo ""
-echo "This is a mock AppImage for testing purposes."
-echo "In a real environment, this would launch the full application."
-echo "Running the bundled application binary now:"
-echo ""
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-${SCRIPT_DIR}/ChatClient.AppDir/usr/bin/chat_client
-EOF
-chmod +x ${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage
+# Verify AppImage was created
+if [ -f "${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage" ]; then
+    chmod +x "${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage"
+    echo "AppImage creation completed successfully: ${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage"
+    
+    # Verify AppImage is executable
+    echo "Verifying AppImage integrity..."
+    if ! ./${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage --appimage-offset >/dev/null 2>&1; then
+        echo "Warning: AppImage may not be correctly formatted. Please check the build."
+    else
+        echo "AppImage verification passed!"
+    fi
+else
+    echo "Error: AppImage creation failed!"
+    exit 1
+fi
 
-echo "AppImage creation completed: ${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage"
+# Print instructions for testing
+echo ""
+echo "=== AppImage Usage ==="
+echo "To make the AppImage executable:"
+echo "  chmod +x ${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage"
+echo ""
+echo "To run the AppImage:"
+echo "  ./${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage"
+echo ""
+echo "For tests in Docker environment:"
+echo "  ./packaging/appimage/test-appimage-in-docker.sh"
+echo ""

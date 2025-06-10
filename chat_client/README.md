@@ -141,6 +141,23 @@ The AppImage is a self-contained portable application that can run on any Linux 
      ./AppRun
      ```
 
+7. **Testing AppImage Audio in Docker**
+   We provide a test script that verifies the AppImage's audio functionality in a Docker container. This ensures the AppImage correctly accesses audio devices across different environments:
+   
+   ```bash
+   # Run the Docker audio test script
+   ./packaging/appimage/test-appimage-in-docker.sh
+   ```
+   
+   This script:
+   - Sets up a Docker container with access to your host's audio devices
+   - Maps PulseAudio sockets for audio pass-through
+   - Installs required dependencies in the container
+   - Verifies audio device detection and PulseAudio connection
+   - Tests both direct AppDir execution and AppImage execution
+   
+   If you encounter audio issues in your environment, this test can help diagnose if the problem is with the AppImage packaging or your system configuration.
+
 ## Docker Support
 
 ### Building Docker Image
