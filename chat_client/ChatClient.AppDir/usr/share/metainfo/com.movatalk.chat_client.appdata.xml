@@ -3,7 +3,7 @@
   <id>com.movatalk.chat_client</id>
   <name>Audio-Visual Chat Client</name>
   <summary>Cross-platform audio-visual chat client</summary>
-  <metadata_license>Apache-2.0</metadata_license>
+  <metadata_license>FSFAP</metadata_license>
   <project_license>Apache-2.0</project_license>
   <description>
     <p>
@@ -21,4 +21,7 @@
   <releases>
     <release version="1.0.0" date="2025-06-10" />
   </releases>
+  <developer id="tom.sapletta">
+    <name>Tom Sapletta</name>
+  </developer>
 </component>
