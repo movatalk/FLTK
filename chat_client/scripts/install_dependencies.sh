@@ -1,4 +1,11 @@
 #!/bin/bash
+#
+# Audio-Visual Chat Client - Dependencies Installation Script
+# Author: Tom Sapletta
+# License: Apache-2.0
+# Copyright 2025 Tom Sapletta
+#
+
 # Installation script for chat client dependencies
 # Supports Ubuntu/Debian, Fedora, and Arch Linux
 

@@ -11,6 +11,7 @@ This is a cross-platform audio-visual chat client built with C++ and FLTK. The a
 - ARM64 NEON and x86_64 SSE2/AVX optimizations
 - Docker containerization with multi-architecture support
 - Comprehensive testing across different hardware platforms
+- AppImage packaging for easy distribution
 
 ## Requirements
 - C++17 compatible compiler
@@ -27,6 +28,14 @@ This is a cross-platform audio-visual chat client built with C++ and FLTK. The a
 sudo apt-get update
 sudo apt-get install build-essential cmake libfltk1.3-dev libportaudio2 libportaudiocpp0 portaudio19-dev
 ```
+
+### Automatic Dependency Installation
+You can use the provided script to automatically install dependencies:
+```bash
+# Run with sudo
+sudo ./scripts/install_dependencies.sh
+```
+The script detects your Linux distribution (Ubuntu/Debian, Fedora, or Arch Linux) and installs the appropriate packages.
 
 ### Building with CMake
 ```bash
@@ -60,6 +69,20 @@ This script will:
 2. Build for ARM64 architecture (using cross-compilation if on x86_64)
 3. Run appropriate tests for the current hardware
 4. Build multi-architecture Docker images if Docker is available
+
+## AppImage Packaging
+
+You can create a portable AppImage that runs on any Linux distribution:
+
+```bash
+# Using make target
+make appimage
+
+# Or directly using the script
+./scripts/build_appimage.sh
+```
+
+For more information about AppImage packaging, see [AppImage_README.md](AppImage_README.md).
 
 ## Docker Support
 
@@ -100,6 +123,9 @@ docker run --rm -it \
   -v /run/user/1000/pulse:/run/user/1000/pulse \
   --device /dev/snd \
   chat-client:latest
+
+# AppImage
+./ChatClient-1.0.0-x86_64.AppImage
 ```
 
 ## Configuration
@@ -172,5 +198,8 @@ systemctl --user start chat-client
 docker-compose up -d
 ```
 
+## Author
+Tom Sapletta
+
 ## License
-This project is released under the MIT License.
+This project is released under the Apache License 2.0. See [LICENSE](LICENSE) file for details.

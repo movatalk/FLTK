@@ -17,7 +17,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
 )
 
 # Install icons
-install(FILES ${CMAKE_SOURCE_DIR}/data/icons/chat_client.png
+install(FILES ${CMAKE_SOURCE_DIR}/data/icons/chat_client.svg
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps/
     COMPONENT icons
     OPTIONAL

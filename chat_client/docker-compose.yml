@@ -1,3 +1,8 @@
+# Audio-Visual Chat Client - Docker Compose Configuration
+# Author: Tom Sapletta
+# License: Apache-2.0
+# Copyright 2025 Tom Sapletta
+
 version: '3.8'
 
 services:

@@ -1,3 +1,8 @@
+# Audio-Visual Chat Client - Docker Image
+# Author: Tom Sapletta
+# License: Apache-2.0
+# Copyright 2025 Tom Sapletta
+
 FROM ubuntu:22.04 as builder
 
 ARG DEBIAN_FRONTEND=noninteractive

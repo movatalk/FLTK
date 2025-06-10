@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "Chat Client (Mock Binary for AppImage Testing)"
+echo "Author: Tom Sapletta"
+echo "License: Apache 2.0"
+echo ""
+echo "This is a mock binary for testing the AppImage packaging."

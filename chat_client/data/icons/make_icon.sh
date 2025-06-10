@@ -13,6 +13,6 @@ convert -size 256x256 xc:SkyBlue \
         -fill white -draw "circle 128,128 128,28" \
         -fill "#303030" -draw "circle 128,128 100,100" \
         -fill white -font DejaVu-Sans-Bold -pointsize 100 -gravity center -annotate 0 "C" \
-        chat_client.png
+        chat_client.svg
 
-echo "Icon created at: chat_client.png"
+echo "Icon created at: chat_client.svg"

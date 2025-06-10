@@ -1,0 +1,33 @@
+{
+    "audio": {
+        "default_device_id": -1,
+        "sample_rate": 44100,
+        "input_channels": 1,
+        "output_channels": 2,
+        "buffer_size": 256,
+        "default_volume": 0.8,
+        "default_gain": 1.0,
+        "enable_echo_cancellation": false,
+        "enable_noise_suppression": true
+    },
+    "protocols": {
+        "enable_discord": false,
+        "discord_token": "",
+        "enable_matrix": false,
+        "matrix_server": "https://matrix.org",
+        "matrix_token": "",
+        "enable_xmpp": false,
+        "xmpp_jid": "",
+        "xmpp_password": ""
+    },
+    "gui": {
+        "width": 800,
+        "height": 600,
+        "theme": "gtk+",
+        "font_size": 14
+    },
+    "debug": {
+        "log_level": "info",
+        "save_logs": true
+    }
+}

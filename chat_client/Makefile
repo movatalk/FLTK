@@ -1,3 +1,8 @@
+# Audio-Visual Chat Client Makefile
+# Author: Tom Sapletta
+# License: Apache-2.0
+# Copyright 2025 Tom Sapletta
+
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -march=native 
 LDFLAGS = -L/usr/lib -L/usr/local/lib

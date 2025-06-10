@@ -1,3 +1,12 @@
+/**
+ * Audio-Visual Chat Client
+ * 
+ * @file main.cpp
+ * @author Tom Sapletta
+ * @copyright 2025 Tom Sapletta
+ * @license Apache-2.0
+ */
+
 #include "core/application.h"
 #include <iostream>
 
