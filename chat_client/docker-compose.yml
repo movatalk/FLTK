@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  chat-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: chat-client:latest
+    container_name: fltk-chat-client
+    restart: unless-stopped
+    
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XDG_RUNTIME_DIR=/tmp
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY}
+      - PULSE_SERVER=unix:/run/user/1000/pulse/native
+      - FLTK_BACKEND=hybrid
+      - CHAT_LOG_LEVEL=info
+    
+    volumes:
+      # GUI Access
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+      - ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY:-wayland-0}:/tmp/${WAYLAND_DISPLAY:-wayland-0}:rw
+      
+      # Audio Access
+      - /run/user/1000/pulse:/run/user/1000/pulse:rw
+      
+      # Persistent Data
+      - ./data:/app/data:rw
+      - ./config:/app/config:rw
+    
+    devices:
+      - /dev/snd:/dev/snd
+    
+    network_mode: host
