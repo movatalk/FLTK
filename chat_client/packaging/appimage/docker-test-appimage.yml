@@ -1,0 +1,43 @@
+# Test environment for Chat Client AppImage with audio support
+version: '3.8'
+
+services:
+  appimage-test:
+    image: ubuntu:22.04
+    container_name: appimage-audio-test
+    
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XDG_RUNTIME_DIR=/tmp
+      - PULSE_SERVER=unix:/run/user/1000/pulse/native
+      - FLTK_BACKEND=hybrid
+    
+    volumes:
+      # GUI Access
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+      
+      # Audio Access
+      - /run/user/1000/pulse:/run/user/1000/pulse:rw
+      
+      # Mount the AppImage file
+      - ../../ChatClient-1.0.0-x86_64.AppImage:/app/ChatClient-1.0.0-x86_64.AppImage:rw
+      
+      # For extracted AppDir testing if needed
+      - ../../ChatClient.AppDir:/app/ChatClient.AppDir:ro
+    
+    devices:
+      - /dev/snd:/dev/snd
+    
+    network_mode: host
+    
+    # Install dependencies and test the AppImage
+    command: >
+      bash -c "apt-get update && 
+      apt-get install -y libfuse2 alsa-utils pulseaudio-utils libgl1 && 
+      chmod +x /app/ChatClient-1.0.0-x86_64.AppImage &&
+      echo 'Testing audio hardware...' &&
+      aplay -l &&
+      pactl info &&
+      echo 'Starting AppImage...' &&
+      /app/ChatClient-1.0.0-x86_64.AppImage"

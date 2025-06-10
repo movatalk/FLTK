@@ -1,0 +1,21 @@
+Source: chat-client
+Section: net
+Priority: optional
+Maintainer: Tom Sapletta <tom@example.com>
+Build-Depends: debhelper-compat (= 13),
+               cmake,
+               libfltk1.3-dev,
+               libportaudio19-dev
+Standards-Version: 4.6.0
+Homepage: https://github.com/movatalk/FLTK
+Rules-Requires-Root: no
+
+Package: chat-client
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},
+         libfltk1.3 (>= 1.3.8),
+         libportaudio2
+Description: Audio-visual chat client
+ Cross-platform audio-visual chat client built with C++ and FLTK.
+ The application provides audio capture and playback capabilities along with
+ a text-based chat interface.

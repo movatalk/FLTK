@@ -1,0 +1,26 @@
+# Maintainer: Tom Sapletta <tom@example.com>
+
+pkgname=chat-client
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Cross-platform audio-visual chat client"
+arch=('x86_64' 'aarch64')
+url="https://github.com/movatalk/FLTK"
+license=('Apache')
+depends=('fltk>=1.3.8' 'portaudio')
+makedepends=('cmake' 'make' 'gcc')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/movatalk/FLTK/archive/v$pkgver.tar.gz")
+sha256sums=('SKIP')  # Replace with actual SHA256 on release
+
+build() {
+  cd "$srcdir/FLTK-$pkgver/chat_client"
+  mkdir -p build
+  cd build
+  cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd "$srcdir/FLTK-$pkgver/chat_client/build"
+  make DESTDIR="$pkgdir/" install
+}

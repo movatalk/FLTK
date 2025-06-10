@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Chat Client AppImage (Mock Version)"
-echo "Author: Tom Saplett"
+echo "Author: Tom Sapletta"
 echo "License: Apache 2.0"
 echo ""
 echo "This is a mock AppImage for testing purposes."

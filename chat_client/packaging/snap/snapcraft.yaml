@@ -1,0 +1,42 @@
+name: chat-client
+version: '1.0.0'
+summary: Audio-visual chat client
+description: |
+  Cross-platform audio-visual chat client built with C++ and FLTK.
+  The application provides audio capture and playback capabilities along with
+  a text-based chat interface.
+
+base: core22
+confinement: strict
+grade: stable
+
+apps:
+  chat-client:
+    command: usr/bin/chat_client
+    extensions: [gnome]
+    plugs:
+      - network
+      - audio-playback
+      - audio-record
+      - camera
+      - desktop
+      - wayland
+      - x11
+
+parts:
+  chat-client:
+    plugin: cmake
+    source: ../..
+    build-packages:
+      - build-essential
+      - libfltk1.3-dev
+      - libportaudio19-dev
+      - cmake
+    stage-packages:
+      - libfltk1.3
+      - libportaudio2
+      - libx11-6
+      - libxft2
+    cmake-parameters:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DCMAKE_INSTALL_PREFIX=/usr

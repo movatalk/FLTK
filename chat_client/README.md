@@ -1,7 +1,9 @@
 # Audio-Visual Chat Client
 
 ## Overview
-This is a cross-platform audio-visual chat client built with C++ and FLTK. The application provides audio capture and playback capabilities along with a text-based chat interface, designed to work seamlessly on both ARM64 and x86_64 Linux platforms.
+This is a cross-platform audio-visual chat client built with C++ and FLTK.
+The application provides audio capture and playback capabilities along with a text-based chat interface,
+designed to work seamlessly on both ARM64 and x86_64 Linux platforms.
 
 ## Features
 - Real-time audio input/output with level monitoring
@@ -84,6 +86,61 @@ make appimage
 
 For more information about AppImage packaging, see [AppImage_README.md](AppImage_README.md).
 
+### Using the AppImage Package
+
+The AppImage is a self-contained portable application that can run on any Linux distribution without installation:
+
+1. **Download** the AppImage file (`ChatClient-1.0.0-x86_64.AppImage` for x86_64 systems or `ChatClient-1.0.0-aarch64.AppImage` for ARM64)
+
+2. **Make it executable**:
+   ```bash
+   chmod +x ChatClient-*.AppImage
+   ```
+
+3. **Run the application**:
+   ```bash
+   ./ChatClient-1.0.0-x86_64.AppImage
+   ```
+
+4. **Optional: Desktop Integration**
+   The first time you run the AppImage, you may be asked if you want to integrate it with your desktop. You can:
+   - Create a desktop shortcut
+   - Add to application menu
+   - Associate with file types
+   - Extract the AppImage (not recommended for most users)
+
+   Alternatively, you can manually integrate it:
+   ```bash
+   ./ChatClient-*.AppImage --install
+   ```
+
+5. **Running from USB or External Drive**
+   AppImages are portable and can run directly from external media:
+   ```bash
+   # From a USB drive
+   /media/username/USB_DRIVE/ChatClient-*.AppImage
+   ```
+
+6. **Troubleshooting**
+   - If the AppImage fails to run, you may need to install FUSE:
+     ```bash
+     # Debian/Ubuntu
+     sudo apt-get install fuse
+     
+     # Fedora
+     sudo dnf install fuse
+     
+     # Arch Linux
+     sudo pacman -S fuse2
+     ```
+   
+   - If FUSE cannot be installed, extract the AppImage:
+     ```bash
+     ./ChatClient-*.AppImage --appimage-extract
+     cd squashfs-root
+     ./AppRun
+     ```
+
 ## Docker Support
 
 ### Building Docker Image
@@ -129,7 +186,8 @@ docker run --rm -it \
 ```
 
 ## Configuration
-The application can be configured by editing the JSON file in `data/config/default.json`. The configuration includes settings for:
+The application can be configured by editing the JSON file in `data/config/default.json`. 
+The configuration includes settings for:
 - Audio devices and parameters
 - Chat protocol settings
 - GUI preferences

@@ -1,9 +1,9 @@
 #!/bin/bash
 #
 # Audio-Visual Chat Client - AppImage Builder
-# Author: Tom Saplett
+# Author: Tom Sapletta
 # License: Apache-2.0
-# Copyright 2025 Tom Saplett
+# Copyright 2025 Tom Sapletta
 #
 
 set -e
@@ -145,7 +145,7 @@ echo "Mock AppImage creation (in a real environment with linuxdeploy installed, 
 cat > ${APP_NAME}-${PKG_VERSION}-${ARCH}.AppImage << 'EOF'
 #!/bin/bash
 echo "Chat Client AppImage (Mock Version)"
-echo "Author: Tom Saplett"
+echo "Author: Tom Sapletta"
 echo "License: Apache 2.0"
 echo ""
 echo "This is a mock AppImage for testing purposes."
