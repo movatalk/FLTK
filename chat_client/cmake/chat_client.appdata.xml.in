@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.movatalk.chat_client</id>
+  <name>Audio-Visual Chat Client</name>
+  <summary>Cross-platform audio-visual chat client</summary>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <description>
+    <p>
+      A cross-platform audio-visual chat client built with C++ and FLTK.
+      The application provides audio capture and playback capabilities along with
+      a text-based chat interface.
+    </p>
+    <p>Features include:</p>
+    <ul>
+      <li>Real-time audio input/output with level monitoring</li>
+      <li>Text-based chat interface with multi-protocol support</li>
+      <li>Audio controls (volume, gain, mute options)</li>
+      <li>Cross-platform compatibility for both ARM64 and x86_64</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">chat_client.desktop</launchable>
+  <url type="homepage">https://github.com/movatalk/FLTK</url>
+  <provides>
+    <binary>chat_client</binary>
+  </provides>
+  <releases>
+    <release version="@PROJECT_VERSION@" date="2025-06-10"/>
+  </releases>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main application window</caption>
+      <image>https://example.com/screenshots/chat_client_main.png</image>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.1" />
+</component>
