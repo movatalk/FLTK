@@ -1,0 +1,15 @@
+[Unit]
+Description=Audio-Visual Chat Client
+After=sound.target graphical.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/chat_client
+Restart=always
+RestartSec=5
+Environment=DISPLAY=:0
+Environment=PULSE_SERVER=unix:/run/user/%U/pulse/native
+Environment=XDG_RUNTIME_DIR=/run/user/%U
+
+[Install]
+WantedBy=default.target

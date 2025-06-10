@@ -1,64 +1,74 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -O2
-INCLUDEDIRS = -Iinclude -I/usr/include
-LIBDIRS = -L/usr/lib
-LIBS = -lfltk -lfltk_images -lportaudio -lpthread
+CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -march=native 
+LDFLAGS = -L/usr/lib -L/usr/local/lib
+LIBS = -lfltk -lfltk_images -lportaudio -pthread
 
-# Platform-specific optimizations
-ifeq ($(shell uname -m),aarch64)
-    CXXFLAGS += -march=armv8-a -mtune=cortex-a72 -O3 -funroll-loops -ffast-math
-    CXXFLAGS += -DARM64_NEON_OPTIMIZED
-endif
+# Include paths
+INCLUDES = -I./include -I./src -I/usr/include -I/usr/local/include
 
-# Sources and objects
-SRC_DIR = src
-OBJ_DIR = obj
-BIN_DIR = bin
+# Output directories
+BINDIR = bin
+OBJDIR = obj
 
-SOURCES = $(shell find $(SRC_DIR) -name '*.cpp')
-OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
-DEPS = $(OBJECTS:.o=.d)
+# Create necessary directories
+$(shell mkdir -p $(BINDIR) $(OBJDIR)/core $(OBJDIR)/audio $(OBJDIR)/gui $(OBJDIR)/network $(OBJDIR)/utils)
 
-TARGET = $(BIN_DIR)/chat_client
+# Source files
+SRCS = $(wildcard src/*.cpp src/core/*.cpp src/audio/*.cpp src/gui/*.cpp src/network/*.cpp src/utils/*.cpp)
+OBJS = $(SRCS:src/%.cpp=$(OBJDIR)/%.o)
 
-# Ensure directories exist
-DIRS = $(OBJ_DIR) $(BIN_DIR) \
-	$(OBJ_DIR)/core $(OBJ_DIR)/audio $(OBJ_DIR)/gui \
-	$(OBJ_DIR)/network $(OBJ_DIR)/utils
+# Target executable
+TARGET = $(BINDIR)/chat_client
 
-# Default target
+# Main targets
+.PHONY: all clean install test
+
 all: $(TARGET)
 
-# Create directories
-$(OBJ_DIR)/%.o: | $(DIRS)
+$(TARGET): $(OBJS)
+	@echo "Linking $@..."
+	@$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+	@echo "Build complete: $@"
 
-$(DIRS):
-	mkdir -p $@
+# Pattern rule for object files
+$(OBJDIR)/%.o: src/%.cpp
+	@echo "Compiling $<..."
+	@mkdir -p $(@D)
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
 
-# Compile
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDEDIRS) -MMD -MP -c $< -o $@
+# Include dependencies
+-include $(OBJS:.o=.d)
 
-# Link
-$(TARGET): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBDIRS) $(LIBS)
-
-# Clean
-clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
-
-# Test
-test: $(TARGET)
-	cd tests && $(MAKE)
-
-# Install
+# Install command
 install: $(TARGET)
-	install -d $(DESTDIR)/usr/local/bin
-	install -m 755 $(TARGET) $(DESTDIR)/usr/local/bin/
-	install -d $(DESTDIR)/usr/local/share/chat_client
-	cp -r data/* $(DESTDIR)/usr/local/share/chat_client/
+	@echo "Installing to /usr/local/bin/..."
+	@install -m 755 $(TARGET) /usr/local/bin/
+	@echo "Installation complete."
 
-# Dependencies
--include $(DEPS)
+# Clean command
+clean:
+	@echo "Cleaning..."
+	@rm -rf $(OBJDIR) $(BINDIR)
+	@echo "Cleaned."
 
-.PHONY: all clean test install
+# Test target
+test:
+	@mkdir -p tests/bin
+	@echo "Building tests..."
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) tests/unit/audio_tests.cpp -o tests/bin/audio_test $(LDFLAGS) $(LIBS)
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) tests/integration/full_system_test.cpp -o tests/bin/integration_test $(LDFLAGS) $(LIBS)
+	@echo "Running tests..."
+	@tests/bin/audio_test
+	@tests/bin/integration_test
+	@echo "Tests completed."
+
+# Architecture-specific targets
+.PHONY: x86_64 arm64
+
+x86_64:
+	@echo "Building for x86_64 architecture..."
+	@$(MAKE) CXXFLAGS="$(CXXFLAGS) -march=x86-64-v2 -mtune=generic -DUSE_SSE2 -DUSE_AVX"
+
+arm64:
+	@echo "Building for ARM64 architecture..."
+	@$(MAKE) CXXFLAGS="$(CXXFLAGS) -march=armv8-a -mtune=cortex-a72 -DARM64_NEON_OPTIMIZED"

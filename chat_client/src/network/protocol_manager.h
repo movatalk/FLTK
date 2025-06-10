@@ -1,6 +1,9 @@
-#pragma once
+#ifndef PROTOCOL_MANAGER_H
+#define PROTOCOL_MANAGER_H
 
 #include <memory>
+#include <string>
+#include <functional>  // Add include for std::function
 
 class ConfigManager;
 
@@ -19,3 +22,5 @@ private:
     class Impl;
     std::unique_ptr<Impl> pImpl;
 };
+
+#endif // PROTOCOL_MANAGER_H

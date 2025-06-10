@@ -1,10 +1,11 @@
 #include "audio_engine.h"
 #include <portaudio.h>
-#include <iostream>
 #include <cmath>
+#include <cstring> // Add for memset
+#include <iostream>
 
 AudioEngine::AudioEngine()
-    : stream_(nullptr), current_backend_(Backend::PULSEAUDIO) {
+    : stream_(nullptr), current_backend_(Backend::PULSEAUDIO), initialized(false) {
 }
 
 AudioEngine::~AudioEngine() {
@@ -88,7 +89,14 @@ bool AudioEngine::open_device(int device_id, unsigned int sample_rate) {
         sample_rate,
         256, // Frames per buffer
         paClipOff,
-        &AudioEngine::pa_audio_callback,
+        [](const void* input_buffer, void* output_buffer,
+           unsigned long frames_per_buffer,
+           const PaStreamCallbackTimeInfo* time_info,
+           PaStreamCallbackFlags status_flags,
+           void* user_data) -> int {
+            return static_cast<AudioEngine*>(user_data)->pa_audio_callback(
+                input_buffer, output_buffer, frames_per_buffer, time_info, status_flags);
+        },
         this
     );
     
@@ -130,10 +138,9 @@ void AudioEngine::set_level_callback(LevelCallback callback) {
 
 int AudioEngine::pa_audio_callback(const void* input, void* output,
                                  unsigned long frames_per_buffer,
-                                 const void* time_info,
-                                 unsigned long status_flags,
-                                 void* user_data) {
-    auto* engine = static_cast<AudioEngine*>(user_data);
+                                 const PaStreamCallbackTimeInfo* time_info,
+                                 PaStreamCallbackFlags status_flags) {
+    auto* engine = static_cast<AudioEngine*>(this);
     
     const float* input_buffer = static_cast<const float*>(input);
     float* output_buffer = static_cast<float*>(output);
